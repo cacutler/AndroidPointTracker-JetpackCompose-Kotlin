@@ -28,12 +28,10 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     var showMenu by remember {mutableStateOf(false)}
     val game = gameWithPlayers?.game
     val sortedPlayers = players.sortedByDescending {it.score}
-    var winner by remember {mutableStateOf<Player?>(null)}// Calculate winner once
-    LaunchedEffect(game?.isActive, players) {
-        if (game?.isActive == false && players.isNotEmpty()) {
-            winner = viewModel.getWinner()
-        }
-    }
+    val winner = if (game?.isActive == false && players.isNotEmpty()) {
+        if (game.lowestScoreWins) players.minByOrNull { it.score }
+        else players.maxByOrNull { it.score }
+    } else null
     Scaffold(
         topBar = {
             TopAppBar(
@@ -88,6 +86,11 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
                             if (game?.isActive == true) {
                                 Text("Tap players to add scores", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
+                            Text(
+                                if (game?.lowestScoreWins == true) "Lowest score wins" else "Highest score wins",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                         if (game?.isActive == true) {
                             Button(onClick = {showNextRoundDialog = true}) {
@@ -119,7 +122,8 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
                     },
                     viewModel = viewModel,
                     repository = repository,
-                    playerCount = players.size
+                    playerCount = players.size,
+                    lowestScoreWins = game?.lowestScoreWins ?: false
                 )
             }
         }
@@ -189,15 +193,13 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     }
 }
 @Composable
-fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Boolean, onPlayerClick: () -> Unit, onRemovePlayer: () -> Unit, viewModel: GameViewModel, repository: GameRepository, playerCount: Int) {
+fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Boolean, onPlayerClick: () -> Unit, onRemovePlayer: () -> Unit, viewModel: GameViewModel, repository: GameRepository, playerCount: Int, lowestScoreWins: Boolean = false) {
     var roundTotal by remember {mutableIntStateOf(0)}
     var showRemoveDialog by remember {mutableStateOf(false)}
     var showRoundDetail by remember {mutableStateOf(false)}
     var showMinPlayerWarning by remember {mutableStateOf(false)}
-    LaunchedEffect(player.id, currentRound) {
-        if (isActive) {
-            roundTotal = viewModel.getTotalForRound(player.id, currentRound)
-        }
+    LaunchedEffect(player.id, currentRound, player.score) {
+        roundTotal = if (isActive) viewModel.getTotalForRound(player.id, currentRound) else 0
     }
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp).combinedClickable(onClick = onPlayerClick, onLongClick = {showRoundDetail = true}, enabled = isActive)) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -213,7 +215,7 @@ fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Bo
                     }
                 }
             }
-            Text("${player.score}", style = MaterialTheme.typography.headlineMedium, color = if (player.score < 0) Color.Red else Color.Blue)
+            Text("${player.score}", style = MaterialTheme.typography.headlineMedium)
             if (isActive) {
                 IconButton(onClick = onPlayerClick) {
                     Icon(Icons.Default.Add, "Add score")

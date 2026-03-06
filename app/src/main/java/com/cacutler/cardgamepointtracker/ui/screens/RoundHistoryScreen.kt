@@ -13,22 +13,18 @@ import com.cacutler.cardgamepointtracker.data.Player
 import com.cacutler.cardgamepointtracker.data.ScoreEntry
 import com.cacutler.cardgamepointtracker.repository.GameRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoundHistoryScreen(repository: GameRepository, gameId: String, onNavigateBack: () -> Unit) {
-    val scope = rememberCoroutineScope()
     var gameWithPlayers by remember { mutableStateOf<com.cacutler.cardgamepointtracker.data.GameWithPlayers?>(null) }
     var playerScores by remember { mutableStateOf<Map<String, List<ScoreEntry>>>(emptyMap()) }
     LaunchedEffect(gameId) {
-        scope.launch {
-            gameWithPlayers = repository.getGameWithPlayers(gameId).first()
-            val scores = mutableMapOf<String, List<ScoreEntry>>()// Load score history for all players
-            gameWithPlayers?.players?.forEach { player ->
-                scores[player.id] = repository.getScoreHistory(player.id).first()
-            }
-            playerScores = scores
+        gameWithPlayers = repository.getGameWithPlayers(gameId).first()
+        val scores = mutableMapOf<String, List<ScoreEntry>>()
+        gameWithPlayers?.players?.forEach { player ->
+            scores[player.id] = repository.getScoreHistory(player.id).first()
         }
+        playerScores = scores
     }
     val game = gameWithPlayers?.game
     val players = gameWithPlayers?.players ?: emptyList()

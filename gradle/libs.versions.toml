@@ -1,8 +1,8 @@
 [versions]
-agp = "9.0.1"
+agp = "9.1.0"
 kotlin = "2.3.10"
 compose = "1.10.4"
-composeBom = "2026.02.00"
+composeBom = "2026.02.01"
 material3 = "1.4.0"
 room = "2.8.4"
 lifecycle = "2.10.0"
@@ -18,7 +18,7 @@ archCoreTesting = "2.2.0"
 mockk = "1.14.9"
 roomTesting = "2.8.4"
 espressoCore = "3.7.0"
-ksp = "2.3.2"
+ksp = "2.3.6"
 compose-material-icons = "1.7.8"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

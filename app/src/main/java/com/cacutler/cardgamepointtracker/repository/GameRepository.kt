@@ -9,8 +9,8 @@ class GameRepository(private val database: AppDatabase) {
     fun getActiveGames(): Flow<List<GameWithPlayers>> = gameDao.getActiveGames()//Game operations
     fun getCompletedGames(): Flow<List<GameWithPlayers>> = gameDao.getCompletedGames()
     fun getGameWithPlayers(gameId: String): Flow<GameWithPlayers?> = gameDao.getGameWithPlayers(gameId)
-    suspend fun createGame(name: String, playerNames: List<String>) {
-        val game = Game(name = name)
+    suspend fun createGame(name: String, playerNames: List<String>, lowestScoreWins: Boolean = false) {
+        val game = Game(name = name, lowestScoreWins = lowestScoreWins)
         gameDao.insertGame(game)
         val players = playerNames.map {playerName ->
             Player(gameId = game.id, name = playerName)

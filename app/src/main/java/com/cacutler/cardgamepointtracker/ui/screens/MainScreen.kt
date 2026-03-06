@@ -67,8 +67,8 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
     if (showNewGameDialog) {
         NewGameDialog(
             onDismiss = {showNewGameDialog = false},
-            onCreateGame = {name, playerNames ->
-                viewModel.createGame(name, playerNames)
+            onCreateGame = {name, playerNames, lowestScoreWins ->
+                viewModel.createGame(name, playerNames, lowestScoreWins)
                 showNewGameDialog = false
             }
         )
@@ -78,7 +78,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
 fun GameRow(gameWithPlayers: GameWithPlayers, onClick: () -> Unit, onDelete: () -> Unit) {
     val game = gameWithPlayers.game
     val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-    val winner = gameWithPlayers.players.maxByOrNull {it.score}
+    val winner = if (game.lowestScoreWins) {gameWithPlayers.players.minByOrNull {it.score}} else {gameWithPlayers.players.maxByOrNull {it.score}}
     var showDeleteDialog by remember { mutableStateOf(false) }
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp).clickable(onClick = onClick)) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {

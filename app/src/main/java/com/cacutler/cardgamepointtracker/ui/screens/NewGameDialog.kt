@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewGameDialog(onDismiss: () -> Unit, onCreateGame: (String, List<String>) -> Unit) {
+fun NewGameDialog(onDismiss: () -> Unit, onCreateGame: (String, List<String>, Boolean) -> Unit) {
     var gameName by remember {mutableStateOf("")}
     var playerNames by remember {mutableStateOf(listOf("", ""))}
+    var lowestScoreWins by remember {mutableStateOf(false)}
     var showError by remember {mutableStateOf(false)}
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -27,17 +28,7 @@ fun NewGameDialog(onDismiss: () -> Unit, onCreateGame: (String, List<String>) ->
                 Spacer(modifier = Modifier.height(8.dp))
                 playerNames.forEachIndexed {index, name ->
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = {newName ->
-                                playerNames = playerNames.toMutableList().apply {
-                                    this[index] = newName
-                                }
-                            },
-                            label = { Text("Player ${index + 1}") },
-                            singleLine = true,
-                            modifier = Modifier.weight(1f)
-                        )
+                        OutlinedTextField(value = name, onValueChange = {newName -> playerNames = playerNames.toMutableList().apply {this[index] = newName}}, label = { Text("Player ${index + 1}") }, singleLine = true, modifier = Modifier.weight(1f))
                         if (playerNames.size > 2) {
                             IconButton(onClick = {playerNames = playerNames.toMutableList().apply {removeAt(index)}}) {
                                 Icon(Icons.Default.Delete, "Remove player", tint = MaterialTheme.colorScheme.error)
@@ -51,6 +42,15 @@ fun NewGameDialog(onDismiss: () -> Unit, onCreateGame: (String, List<String>) ->
                     Spacer(Modifier.width(4.dp))
                     Text("Add Player")
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Winning Condition", style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(selected = !lowestScoreWins, onClick = {lowestScoreWins = false}, label = {Text("Highest Score Wins")}, modifier = Modifier.weight(1f))
+                    FilterChip(selected = lowestScoreWins, onClick = {lowestScoreWins = true}, label = {Text("Lowest Score Wins")}, modifier = Modifier.weight(1f))
+                }
                 if (showError) {
                     Text("Please enter a game name and at least 2 unique player names", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
                 }
@@ -61,7 +61,7 @@ fun NewGameDialog(onDismiss: () -> Unit, onCreateGame: (String, List<String>) ->
                 onClick = {
                     val validPlayers = playerNames.map {it.trim()}.filter {it.isNotBlank()}.distinct()
                     if (gameName.isNotBlank() && validPlayers.size >= 2) {
-                        onCreateGame(gameName.trim(), validPlayers)
+                        onCreateGame(gameName.trim(), validPlayers, lowestScoreWins)
                         showError = false
                     } else {
                         showError = true

@@ -8,7 +8,8 @@ data class Game(
     val name: String,
     val date: Long = System.currentTimeMillis(),
     val isActive: Boolean = true,
-    val currentRound: Int = 1
+    val currentRound: Int = 1,
+    val lowestScoreWins: Boolean = false
 )
 data class GameWithPlayers(
     @Embedded val game: Game,

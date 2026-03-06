@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val repository: GameRepository): ViewModel() {
     val activeGames: StateFlow<List<GameWithPlayers>> = repository.getActiveGames().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val completedGames: StateFlow<List<GameWithPlayers>> = repository.getCompletedGames().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    fun createGame(name: String, playersNames: List<String>) {
+    fun createGame(name: String, playersNames: List<String>, lowestScoreWins: Boolean = false) {
         viewModelScope.launch {
-            repository.createGame(name, playersNames)
+            repository.createGame(name, playersNames, lowestScoreWins)
         }
     }
     fun deleteGame(game: Game) {
