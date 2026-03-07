@@ -64,4 +64,11 @@ class GameDaoTest {
         assertEquals(0, activeGames.size)// Assert
         assertEquals(1, completedGames.size)
     }
+    @Test
+    fun insertGameWithLowestScoreWins() = runTest {
+        val game = Game(id = "game1", name = "Golf Night", isActive = true, lowestScoreWins = true)
+        gameDao.insertGame(game)
+        val games = gameDao.getActiveGames().first()
+        assertEquals(true, games[0].game.lowestScoreWins)
+    }
 }

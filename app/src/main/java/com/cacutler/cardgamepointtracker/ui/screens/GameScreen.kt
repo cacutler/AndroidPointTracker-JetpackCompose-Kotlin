@@ -28,10 +28,12 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     var showMenu by remember {mutableStateOf(false)}
     val game = gameWithPlayers?.game
     val sortedPlayers = players.sortedByDescending {it.score}
-    val winner = if (game?.isActive == false && players.isNotEmpty()) {
-        if (game.lowestScoreWins) players.minByOrNull { it.score }
-        else players.maxByOrNull { it.score }
-    } else null
+    var winner by remember { mutableStateOf<Player?>(null) }
+    LaunchedEffect(game?.isActive, players) {
+        if (game?.isActive == false && players.isNotEmpty()) {
+            winner = viewModel.getWinner()
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(

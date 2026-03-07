@@ -46,12 +46,12 @@ class MainScreenTest {
         composeTestRule.setContent {
             MainScreen(viewModel = viewModel, onNavigateToGame = {})
         }
-        composeTestRule.onNodeWithContentDescription("New Game").performClick()// Open dialog
-        composeTestRule.onNodeWithText("Game Name").performTextInput("Poker Night")// Enter game name
-        composeTestRule.onAllNodesWithText("Player 1")[0].performTextInput("Alice")// Enter player names
+        composeTestRule.onNodeWithContentDescription("New Game").performClick()
+        composeTestRule.onNodeWithText("Game Name").performTextInput("Poker Night")
+        composeTestRule.onAllNodesWithText("Player 1")[0].performTextInput("Alice")
         composeTestRule.onAllNodesWithText("Player 2")[0].performTextInput("Bob")
-        composeTestRule.onNodeWithText("Create").performClick()// Create game
-        composeTestRule.waitUntil(timeoutMillis = 2000) {// Verify dialog is dismissed and game appears
+        composeTestRule.onNodeWithText("Create").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 2000) {
             composeTestRule.onAllNodesWithText("Poker Night").fetchSemanticsNodes().isNotEmpty()
         }
     }
@@ -72,5 +72,16 @@ class MainScreenTest {
         composeTestRule.onNodeWithContentDescription("New Game").performClick()
         composeTestRule.onNodeWithText("Add Player").performClick()// Add a third player
         composeTestRule.onNodeWithText("Player 3").assertIsDisplayed()// Verify third player field exists
+    }
+    @Test
+    fun newGameDialog_canSelectLowestScoreWins() {
+        composeTestRule.setContent {
+            MainScreen(viewModel = viewModel, onNavigateToGame = {})
+        }
+        composeTestRule.onNodeWithContentDescription("New Game").performClick()
+        composeTestRule.onNodeWithText("Lowest Score Wins").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Lowest Score Wins").performClick()
+        composeTestRule.onNodeWithText("Highest Score Wins").assertIsDisplayed() // still visible
+        composeTestRule.onNodeWithText("Lowest Score Wins").assertIsDisplayed()
     }
 }

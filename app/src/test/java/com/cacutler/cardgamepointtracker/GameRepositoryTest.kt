@@ -33,13 +33,18 @@ class GameRepositoryTest {
     }
     @Test
     fun `createGame should insert game and players`() = runTest {
-        val gameName = "Test Game"//Arrange
-        val playerNames = listOf("Alice", "Bob", "Charlie")
         coEvery {gameDao.insertGame(any())} just Runs
         coEvery {playerDao.insertPlayers(any())} just Runs
-        repository.createGame(gameName, playerNames)//Act
-        coVerify(exactly = 1) {gameDao.insertGame(match {it.name == gameName})}//Assert
-        coVerify(exactly = 1) {playerDao.insertPlayers(match {it.size == 3})}
+        repository.createGame("Test Game", listOf("Alice", "Bob", "Charlie"), lowestScoreWins = false)
+        coVerify(exactly = 1) {gameDao.insertGame(match { it.name == "Test Game" && !it.lowestScoreWins })}
+        coVerify(exactly = 1) {playerDao.insertPlayers(match { it.size == 3 })}
+    }
+    @Test
+    fun `createGame should pass lowestScoreWins flag to game`() = runTest {
+        coEvery {gameDao.insertGame(any())} just Runs
+        coEvery {playerDao.insertPlayers(any())} just Runs
+        repository.createGame("Golf Night", listOf("Alice", "Bob"), lowestScoreWins = true)
+        coVerify(exactly = 1) {gameDao.insertGame(match {it.lowestScoreWins})}
     }
     @Test
     fun `addPoints should create score entry and update player score`() = runTest {
@@ -72,12 +77,14 @@ class GameRepositoryTest {
         coVerify(exactly = 0) {playerDao.addPoints(any(), any())}
     }
     @Test
-    fun `getWinner should return player with highest score`() = runTest {
-        val gameId = "game123"//Arrange
+    fun `getWinner should return player with highest score by default`() = runTest {
+        val gameId = "game123"
+        val game = Game(id = gameId, name = "Test", lowestScoreWins = false)
+        val gameWithPlayers = GameWithPlayers(game, emptyList())
         val players = listOf(Player(id = "p1", gameId = gameId, name = "Alice", score = 100), Player(id = "p2", gameId = gameId, name = "Bob", score = 150), Player(id = "p3", gameId = gameId, name = "Charlie", score = 75))
+        every {gameDao.getGameWithPlayers(gameId)} returns flowOf(gameWithPlayers)
         every {playerDao.getPlayersForGame(gameId)} returns flowOf(players)
-        val winner = repository.getWinner(gameId)//Act
-        assertNotNull(winner)//Assert
+        val winner = repository.getWinner(gameId)
         assertEquals("Bob", winner?.name)
         assertEquals(150, winner?.score)
     }
@@ -93,5 +100,24 @@ class GameRepositoryTest {
             playerDao.resetScores(gameId)
             gameDao.resetGame(gameId)
         }
+    }
+    @Test
+    fun `getWinner should return player with lowest score when lowestScoreWins`() = runTest {
+        val gameId = "game123"
+        val game = Game(id = gameId, name = "Test", lowestScoreWins = true)
+        val gameWithPlayers = GameWithPlayers(game, emptyList())
+        val players = listOf(Player(id = "p1", gameId = gameId, name = "Alice", score = 100), Player(id = "p2", gameId = gameId, name = "Bob", score = 150), Player(id = "p3", gameId = gameId, name = "Charlie", score = 75))
+        every {gameDao.getGameWithPlayers(gameId)} returns flowOf(gameWithPlayers)
+        every {playerDao.getPlayersForGame(gameId)} returns flowOf(players)
+        val winner = repository.getWinner(gameId)
+        assertEquals("Charlie", winner?.name)
+        assertEquals(75, winner?.score)
+    }
+    @Test
+    fun `getWinner should return null when game not found`() = runTest {
+        val gameId = "nonexistent"
+        every {gameDao.getGameWithPlayers(gameId)} returns flowOf(null)
+        val winner = repository.getWinner(gameId)
+        assertNull(winner)
     }
 }

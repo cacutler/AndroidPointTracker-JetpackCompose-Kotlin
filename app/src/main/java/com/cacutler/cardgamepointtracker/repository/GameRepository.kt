@@ -51,9 +51,10 @@ class GameRepository(private val database: AppDatabase) {
     }
     fun getScoreHistory(playerId: String): Flow<List<ScoreEntry>> = scoreEntryDao.getScoreHistory(playerId)
     fun getScoresForRound(playerId: String, round: Int): Flow<List<ScoreEntry>> = scoreEntryDao.getScoresForRound(playerId, round)
-    suspend fun getWinner(gameId: String): Player? {//Helper functions
+    suspend fun getWinner(gameId: String): Player? {
+        val game = gameDao.getGameWithPlayers(gameId).first()?.game ?: return null
         val players = playerDao.getPlayersForGame(gameId).first()
-        return players.maxByOrNull {it.score}
+        return if (game.lowestScoreWins) players.minByOrNull { it.score } else players.maxByOrNull { it.score }
     }
     suspend fun getTotalForRound(playerId: String, round: Int): Int {
         val scores = scoreEntryDao.getScoresForRound(playerId, round).first()

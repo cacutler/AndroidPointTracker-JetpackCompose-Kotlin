@@ -211,4 +211,15 @@ class GameScreenTest {
         composeTestRule.onNodeWithText("Cannot Remove Player", useUnmergedTree = true).assertIsDisplayed()
         composeTestRule.onNodeWithText("A game must have at least 2 players. Add more players before removing Alice.", useUnmergedTree = true).assertIsDisplayed()
     }
+    @Test
+    fun gameScreen_showsWinConditionLabel() {
+        composeTestRule.setContent {
+            GameScreen(viewModel = viewModel, repository = repository, onNavigateBack = {}, onNavigateToHistory = {})
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.waitUntil(timeoutMillis = 10000) {
+            composeTestRule.onAllNodesWithText("Highest score wins", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeTestRule.onNodeWithText("Highest score wins", useUnmergedTree = true).assertIsDisplayed()
+    }
 }
