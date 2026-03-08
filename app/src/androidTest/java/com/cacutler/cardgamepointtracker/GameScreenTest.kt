@@ -105,7 +105,7 @@ class GameScreenTest {
             composeTestRule.onAllNodesWithText("Alice", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onAllNodesWithText("Alice", useUnmergedTree = true)[0].performClick()// Click on Alice's row
-        composeTestRule.waitUntil(timeoutMillis = 5000) {// Verify score sheet is shown
+        composeTestRule.waitUntil(timeoutMillis = 5000) {// Verify scoresheet is shown
             composeTestRule.onAllNodesWithText("Quick Add", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText("Quick Add", useUnmergedTree = true).assertIsDisplayed()
@@ -119,14 +119,13 @@ class GameScreenTest {
         composeTestRule.waitUntil(timeoutMillis = 10000) {// Wait for players to load
             composeTestRule.onAllNodesWithText("Alice", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
-        composeTestRule.onAllNodesWithText("Alice", useUnmergedTree = true)[0].performClick()// Open score sheet for Alice
-        composeTestRule.waitUntil(timeoutMillis = 5000) {// Wait for score sheet to open
+        composeTestRule.onAllNodesWithText("Alice", useUnmergedTree = true)[0].performClick()// Open scoresheet for Alice
+        composeTestRule.waitUntil(timeoutMillis = 5000) {// Wait for scoresheet to open
             composeTestRule.onAllNodesWithText("+10", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText("+10", useUnmergedTree = true).performClick()// Click quick add button for 10 points
         composeTestRule.waitUntil(timeoutMillis = 5000) {// Wait for sheet to close and score to update
-            composeTestRule.onAllNodesWithText("10", useUnmergedTree = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            composeTestRule.onAllNodesWithText("10", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
     }
     @Test
@@ -152,8 +151,7 @@ class GameScreenTest {
         }
         composeTestRule.waitForIdle()
         composeTestRule.waitUntil(timeoutMillis = 10000) {// Wait for screen to load
-            composeTestRule.onAllNodesWithText("Next Round", useUnmergedTree = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            composeTestRule.onAllNodesWithText("Next Round", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithText("Next Round", useUnmergedTree = true).performClick()// Open next round dialog
         composeTestRule.waitUntil(timeoutMillis = 5000) {// Wait for dialog
@@ -171,8 +169,7 @@ class GameScreenTest {
         }
         composeTestRule.waitForIdle()
         composeTestRule.waitUntil(timeoutMillis = 10000) {// Wait for screen to load
-            composeTestRule.onAllNodesWithContentDescription("More")
-                .fetchSemanticsNodes().isNotEmpty()
+            composeTestRule.onAllNodesWithContentDescription("More").fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.onNodeWithContentDescription("More").performClick()// Open menu
         composeTestRule.waitUntil(timeoutMillis = 2000) {// Wait for menu and click Add Player
@@ -180,8 +177,7 @@ class GameScreenTest {
         }
         composeTestRule.onNodeWithText("Add Player", useUnmergedTree = true).performClick()
         composeTestRule.waitUntil(timeoutMillis = 3000) {// Wait for the dialog's Cancel button to appear (unique to dialog)
-            composeTestRule.onAllNodesWithText("Cancel", useUnmergedTree = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            composeTestRule.onAllNodesWithText("Cancel", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
         }
         composeTestRule.waitForIdle()
         val textFields = composeTestRule.onAllNodes(hasSetTextAction(), useUnmergedTree = true)// Find and interact with the text field

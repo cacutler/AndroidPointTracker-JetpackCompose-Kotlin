@@ -36,8 +36,8 @@ class GameRepositoryTest {
         coEvery {gameDao.insertGame(any())} just Runs
         coEvery {playerDao.insertPlayers(any())} just Runs
         repository.createGame("Test Game", listOf("Alice", "Bob", "Charlie"), lowestScoreWins = false)
-        coVerify(exactly = 1) {gameDao.insertGame(match { it.name == "Test Game" && !it.lowestScoreWins })}
-        coVerify(exactly = 1) {playerDao.insertPlayers(match { it.size == 3 })}
+        coVerify(exactly = 1) {gameDao.insertGame(match {it.name == "Test Game" && !it.lowestScoreWins})}
+        coVerify(exactly = 1) {playerDao.insertPlayers(match {it.size == 3})}
     }
     @Test
     fun `createGame should pass lowestScoreWins flag to game`() = runTest {
