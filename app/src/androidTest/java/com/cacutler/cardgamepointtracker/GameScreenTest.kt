@@ -39,7 +39,7 @@ class GameScreenTest {
         if (games.isEmpty()) {
             throw IllegalStateException("No games found after creation")
         }
-        gameId = games.maxByOrNull { it.game.id }?.game?.id ?: throw IllegalStateException("Could not get game ID")
+        gameId = games.maxByOrNull {it.game.id}?.game?.id ?: throw IllegalStateException("Could not get game ID")
         val players = repository.getPlayersForGame(gameId).first()
         if (players.isEmpty()) {
             throw IllegalStateException("No players found for game")
