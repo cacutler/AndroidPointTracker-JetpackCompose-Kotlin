@@ -287,6 +287,6 @@ fun RoundDetailDialog(player: Player, round: Int, repository: GameRepository, on
                 }
             }
         },
-        confirmButton = {TextButton(onClick = onDismiss) {Text("Close")} }
+        confirmButton = {TextButton(onClick = onDismiss) {Text("Close")}}
     )
 }
