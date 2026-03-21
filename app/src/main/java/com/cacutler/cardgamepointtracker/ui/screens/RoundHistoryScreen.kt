@@ -21,7 +21,7 @@ fun RoundHistoryScreen(repository: GameRepository, gameId: String, onNavigateBac
     LaunchedEffect(gameId) {
         gameWithPlayers = repository.getGameWithPlayers(gameId).first()
         val scores = mutableMapOf<String, List<ScoreEntry>>()
-        gameWithPlayers?.players?.forEach { player ->
+        gameWithPlayers?.players?.forEach {player ->
             scores[player.id] = repository.getScoreHistory(player.id).first()
         }
         playerScores = scores
@@ -29,20 +29,9 @@ fun RoundHistoryScreen(repository: GameRepository, gameId: String, onNavigateBac
     val game = gameWithPlayers?.game
     val players = gameWithPlayers?.players ?: emptyList()
     val allRounds = (1..(game?.currentRound ?: 1)).toList().reversed()// Generate list of rounds in reverse order
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Round History") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
+    Scaffold(topBar = {TopAppBar(title = {Text("Round History")}, navigationIcon = {IconButton(onClick = onNavigateBack) {Icon(Icons.Default.ArrowBack, "Back")}})}) {padding ->
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-            items(allRounds) { round ->
+            items(allRounds) {round ->
                 RoundSection(round = round, players = players, playerScores = playerScores)
             }
         }
@@ -54,7 +43,7 @@ fun RoundSection(round: Int, players: List<Player>, playerScores: Map<String, Li
         Column(modifier = Modifier.padding(16.dp)) {
             Text("Round $round", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 8.dp))
             players.forEach {player ->
-                val scores = playerScores[player.id]?.filter { it.round == round } ?: emptyList()
+                val scores = playerScores[player.id]?.filter {it.round == round} ?: emptyList()
                 if (scores.isNotEmpty()) {
                     PlayerRoundRow(player = player, scores = scores)
                     if (player != players.last()) {
@@ -67,11 +56,11 @@ fun RoundSection(round: Int, players: List<Player>, playerScores: Map<String, Li
 }
 @Composable
 fun PlayerRoundRow(player: Player, scores: List<ScoreEntry>) {
-    val total = scores.sumOf { it.points }
+    val total = scores.sumOf {it.points}
     Column {
         Text(player.name, style = MaterialTheme.typography.titleSmall)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(scores.joinToString(", ") { "${if (it.points > 0) "+" else ""}${it.points}" }, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+            Text(scores.joinToString(", ") {"${if (it.points > 0) "+" else ""}${it.points}"}, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
             Text("Total: ${if (total > 0) "+" else ""}$total", style = MaterialTheme.typography.bodySmall, color = if (total >= 0) Color.Blue else Color.Red, modifier = Modifier.padding(start = 8.dp))
         }
     }

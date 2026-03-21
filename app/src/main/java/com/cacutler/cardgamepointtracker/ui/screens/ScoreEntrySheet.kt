@@ -16,10 +16,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun ScoreEntrySheet(player: Player, currentRound: Int, repository: GameRepository, onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
-    var points by remember { mutableStateOf("") }
-    var isNegative by remember { mutableStateOf(false) }
+    var points by remember {mutableStateOf("")}
+    var isNegative by remember {mutableStateOf(false)}
     val scoreHistory by repository.getScoreHistory(player.id).collectAsState(initial = emptyList())
-
     fun submitPoints(value: Int) {
         val finalValue = if (isNegative) -value else value
         scope.launch {
@@ -27,15 +26,13 @@ fun ScoreEntrySheet(player: Player, currentRound: Int, repository: GameRepositor
         }
         onDismiss()
     }
-
     fun undoLast() {
         scope.launch {
             repository.undoLastScore(player.id)
         }
         onDismiss()
     }
-
-    ModalBottomSheet(onDismissRequest = onDismiss, dragHandle = { BottomSheetDefaults.DragHandle() }) {
+    ModalBottomSheet(onDismissRequest = onDismiss, dragHandle = {BottomSheetDefaults.DragHandle()}) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(player.name, style = MaterialTheme.typography.titleLarge)
             Text("Round $currentRound", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -46,27 +43,14 @@ fun ScoreEntrySheet(player: Player, currentRound: Int, repository: GameRepositor
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = if (isNegative) "-" else "+",
-                    fontSize = 48.sp,
-                    color = if (isNegative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.width(50.dp)
-                )
-                OutlinedTextField(
-                    value = points,
-                    onValueChange = { points = it.filter { char -> char.isDigit() } },
-                    placeholder = { Text("Points", textAlign = TextAlign.Center) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 48.sp, textAlign = TextAlign.Center),
-                    modifier = Modifier.weight(1f),
-                    singleLine = true
-                )
+                Text(text = if (isNegative) "-" else "+", fontSize = 48.sp, color = if (isNegative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary, modifier = Modifier.width(50.dp))
+                OutlinedTextField(value = points, onValueChange = {points = it.filter {char -> char.isDigit()}}, placeholder = {Text("Points", textAlign = TextAlign.Center)}, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), textStyle = LocalTextStyle.current.copy(fontSize = 48.sp, textAlign = TextAlign.Center), modifier = Modifier.weight(1f), singleLine = true)
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text("Quick Add", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf(1, 5, 10, 25, 50).forEach { value ->
+                listOf(1, 5, 10, 25, 50).forEach {value ->
                     Button(onClick = {submitPoints(value)}, colors = ButtonDefaults.buttonColors(containerColor = if (isNegative) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer, contentColor = if (isNegative) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onPrimaryContainer)) {
                         Text("${if (isNegative) "-" else "+"}$value")
                     }

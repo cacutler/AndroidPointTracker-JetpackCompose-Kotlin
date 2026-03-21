@@ -22,18 +22,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
     val activeGames by viewModel.activeGames.collectAsState()
     val completedGames by viewModel.completedGames.collectAsState()
     var showNewGameDialog by remember {mutableStateOf(false)}
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {Text("Card Games")},
-                actions = {
-                    IconButton(onClick = {showNewGameDialog = true}) {
-                        Icon(Icons.Default.Add, contentDescription = "New Game")
-                    }
-                }
-            )
-        }
-    ) {padding ->
+    Scaffold(topBar = {TopAppBar(title = {Text("Card Games")}, actions = {IconButton(onClick = {showNewGameDialog = true}) {Icon(Icons.Default.Add, contentDescription = "New Game")}})}) {padding ->
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
             if (activeGames.isNotEmpty()) {
                 item {
