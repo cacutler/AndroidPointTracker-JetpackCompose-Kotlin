@@ -7,9 +7,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.cacutler.cardgamepointtracker.ui.screens.*
-import com.cacutler.cardgamepointtracker.ui.viewmodels.*
 import com.cacutler.cardgamepointtracker.repository.GameRepository
+import com.cacutler.cardgamepointtracker.ui.screens.GameScreen
+import com.cacutler.cardgamepointtracker.ui.screens.MainScreen
+import com.cacutler.cardgamepointtracker.ui.screens.RoundHistoryScreen
+import com.cacutler.cardgamepointtracker.ui.viewmodels.GameViewModel
+import com.cacutler.cardgamepointtracker.ui.viewmodels.GameViewModelFactory
+import com.cacutler.cardgamepointtracker.ui.viewmodels.MainViewModel
+import com.cacutler.cardgamepointtracker.ui.viewmodels.MainViewModelFactory
 sealed class Screen(val route: String) {
     object Main: Screen("main")
     object Game: Screen("game/{gameId}") {

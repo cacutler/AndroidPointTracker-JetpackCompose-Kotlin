@@ -1,15 +1,20 @@
 package com.cacutler.cardgamepointtracker
-import com.cacutler.cardgamepointtracker.data.*
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.cacutler.cardgamepointtracker.data.AppDatabase
+import com.cacutler.cardgamepointtracker.data.Game
+import com.cacutler.cardgamepointtracker.data.GameDao
+import com.cacutler.cardgamepointtracker.data.Player
+import com.cacutler.cardgamepointtracker.data.PlayerDao
+import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.*
 import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class GameDaoTest {
