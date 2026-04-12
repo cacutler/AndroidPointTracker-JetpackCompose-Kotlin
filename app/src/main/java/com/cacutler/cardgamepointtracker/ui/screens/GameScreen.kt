@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
@@ -40,7 +42,7 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
                 title = {Text(game?.name ?: "")},
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
                     }
                 },
                 actions = {
@@ -96,7 +98,7 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
                         }
                         if (game?.isActive == true) {
                             Button(onClick = {showNextRoundDialog = true}) {
-                                Icon(Icons.Default.ArrowForward, null)
+                                Icon(Icons.AutoMirrored.Filled.ArrowForward, null)
                                 Spacer(Modifier.width(4.dp))
                                 Text("Next Round")
                             }
@@ -252,7 +254,7 @@ fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Bo
         )
     }
     if (showMinPlayerWarning) {
-        AlertDialog(onDismissRequest = {showMinPlayerWarning = false}, title = {Text("Cannot Remove Player")}, text = {Text("A game must have at least 2 players. Add more players before removing ${player.name}.")}, confirmButton = {TextButton(onClick = { showMinPlayerWarning = false }) {Text("OK")}})
+        AlertDialog(onDismissRequest = {showMinPlayerWarning = false}, title = {Text("Cannot Remove Player")}, text = {Text("A game must have at least 2 players. Add more players before removing ${player.name}.")}, confirmButton = {TextButton(onClick = {showMinPlayerWarning = false}) {Text("OK")}})
     }
     if (showRoundDetail) {
         RoundDetailDialog(player = player, round = currentRound, repository = repository, onDismiss = {showRoundDetail = false})

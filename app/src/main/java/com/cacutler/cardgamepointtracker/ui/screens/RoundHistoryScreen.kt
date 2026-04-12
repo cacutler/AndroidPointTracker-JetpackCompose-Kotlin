@@ -3,7 +3,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun RoundHistoryScreen(repository: GameRepository, gameId: String, onNavigateBac
     val game = gameWithPlayers?.game
     val players = gameWithPlayers?.players ?: emptyList()
     val allRounds = (1..(game?.currentRound ?: 1)).toList().reversed()// Generate list of rounds in reverse order
-    Scaffold(topBar = {TopAppBar(title = {Text("Round History")}, navigationIcon = {IconButton(onClick = onNavigateBack) {Icon(Icons.Default.ArrowBack, "Back")}})}) {padding ->
+    Scaffold(topBar = {TopAppBar(title = {Text("Round History")}, navigationIcon = {IconButton(onClick = onNavigateBack) {Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")}})}) {padding ->
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
             items(allRounds) {round ->
                 RoundSection(round = round, players = players, playerScores = playerScores)
