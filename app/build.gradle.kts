@@ -6,11 +6,11 @@ plugins {
 }
 extensions.configure<ApplicationExtension> {
     namespace = "com.cacutler.cardgamepointtracker"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         applicationId = "com.cacutler.cardgamepointtracker"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 2
         versionName = "1.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
