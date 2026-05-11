@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -62,6 +63,8 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     val game = gameWithPlayers?.game
     val sortedPlayers = players.sortedByDescending {it.score}
     var winner by remember {mutableStateOf<Player?>(null)}
+    var showTrickSheet by remember { mutableStateOf(false) }
+    var trickPlayer by remember { mutableStateOf<Player?>(null) }
     LaunchedEffect(game?.isActive, players) {
         if (game?.isActive == false && players.isNotEmpty()) {
             winner = viewModel.getWinner()
@@ -158,7 +161,11 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
                     viewModel = viewModel,
                     repository = repository,
                     playerCount = players.size,
-                    lowestScoreWins = game?.lowestScoreWins ?: false
+                    lowestScoreWins = game?.lowestScoreWins ?: false,
+                    onTrickClick = {
+                        trickPlayer = player
+                        showTrickSheet = true
+                    }
                 )
             }
         }
@@ -228,13 +235,22 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     }
 }
 @Composable
-fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Boolean, onPlayerClick: () -> Unit, onRemovePlayer: () -> Unit, viewModel: GameViewModel, repository: GameRepository, playerCount: Int, lowestScoreWins: Boolean = false) {
+fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Boolean, onPlayerClick: () -> Unit, onRemovePlayer: () -> Unit, viewModel: GameViewModel, repository: GameRepository, playerCount: Int, lowestScoreWins: Boolean = false, onTrickClick: () -> Unit) {
     var roundTotal by remember {mutableIntStateOf(0)}
     var showRemoveDialog by remember {mutableStateOf(false)}
     var showRoundDetail by remember {mutableStateOf(false)}
     var showMinPlayerWarning by remember {mutableStateOf(false)}
     LaunchedEffect(player.id, currentRound, player.score) {
         roundTotal = if (isActive) viewModel.getTotalForRound(player.id, currentRound) else 0
+    }
+    val trickEntry by repository.getTrickEntryFlow(player.id, currentRound).collectAsState(initial = null)
+    trickEntry?.let {
+        Text(text = "Trick goal: ${it.tricksBid}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    if (isActive) {
+        IconButton(onClick = onTrickClick) {
+            Icon(Icons.Default.Star, "Track tricks") // or any suitable icon
+        }
     }
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp).combinedClickable(onClick = onPlayerClick, onLongClick = {showRoundDetail = true}, enabled = isActive)) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {

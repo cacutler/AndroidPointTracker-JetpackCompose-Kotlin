@@ -4,12 +4,14 @@ import com.cacutler.cardgamepointtracker.data.Game
 import com.cacutler.cardgamepointtracker.data.GameWithPlayers
 import com.cacutler.cardgamepointtracker.data.Player
 import com.cacutler.cardgamepointtracker.data.ScoreEntry
+import com.cacutler.cardgamepointtracker.data.TrickEntry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 class GameRepository(private val database: AppDatabase) {
     private val gameDao = database.gameDao()
     private val playerDao = database.playerDao()
     private val scoreEntryDao = database.scoreEntryDao()
+    private val trickEntryDao = database.trickEntryDao()
     fun getActiveGames(): Flow<List<GameWithPlayers>> = gameDao.getActiveGames()//Game operations
     fun getCompletedGames(): Flow<List<GameWithPlayers>> = gameDao.getCompletedGames()
     fun getGameWithPlayers(gameId: String): Flow<GameWithPlayers?> = gameDao.getGameWithPlayers(gameId)
@@ -64,4 +66,10 @@ class GameRepository(private val database: AppDatabase) {
         val scores = scoreEntryDao.getScoresForRound(playerId, round).first()
         return scores.sumOf {it.points}
     }
+    suspend fun setBid(playerId: String, round: Int, bid: Int) {
+        val existing = trickEntryDao.getTrickEntry(playerId, round)
+        val entry = existing?.copy(tricksBid = bid) ?: TrickEntry(playerId = playerId, round = round, tricksBid = bid)
+        trickEntryDao.upsertTrickEntry(entry)
+    }
+    fun getTrickEntryFlow(playerId: String, round: Int): Flow<TrickEntry?> = trickEntryDao.getTrickEntryFlow(playerId, round)
 }
