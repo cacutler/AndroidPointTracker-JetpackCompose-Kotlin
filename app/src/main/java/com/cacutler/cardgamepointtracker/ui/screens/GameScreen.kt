@@ -181,6 +181,12 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
             }
         )
     }
+    if (showTrickSheet && trickPlayer != null) {
+        TrickTrackingSheet(player = trickPlayer!!, currentRound = game?.currentRound ?: 1, repository = repository, onDismiss = {
+            showTrickSheet = false
+            trickPlayer = null
+        })
+    }
     if (showNextRoundDialog) {
         AlertDialog(
             onDismissRequest = {showNextRoundDialog = false},
@@ -244,14 +250,6 @@ fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Bo
         roundTotal = if (isActive) viewModel.getTotalForRound(player.id, currentRound) else 0
     }
     val trickEntry by repository.getTrickEntryFlow(player.id, currentRound).collectAsState(initial = null)
-    trickEntry?.let {
-        Text(text = "Trick goal: ${it.tricksBid}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-    if (isActive) {
-        IconButton(onClick = onTrickClick) {
-            Icon(Icons.Default.Star, "Track tricks") // or any suitable icon
-        }
-    }
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp).combinedClickable(onClick = onPlayerClick, onLongClick = {showRoundDetail = true}, enabled = isActive)) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
@@ -265,9 +263,15 @@ fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Bo
                         Text("This round: ${if (roundTotal > 0) "+" else ""}$roundTotal", style = MaterialTheme.typography.bodySmall, color = if (roundTotal > 0) Color.Blue else Color.Red)
                     }
                 }
+                trickEntry?.let {
+                    Text(text = "Trick goal: ${it.tricksBid}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
             Text("${player.score}", style = MaterialTheme.typography.headlineMedium)
             if (isActive) {
+                IconButton(onClick = onTrickClick) {
+                    Icon(Icons.Default.Star, "Track tricks")
+                }
                 IconButton(onClick = onPlayerClick) {
                     Icon(Icons.Default.Add, "Add score")
                 }
