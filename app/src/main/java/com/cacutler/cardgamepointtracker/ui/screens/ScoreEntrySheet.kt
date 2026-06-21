@@ -67,7 +67,7 @@ fun ScoreEntrySheet(player: Player, currentRound: Int, repository: GameRepositor
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                Text(text = if (isNegative) "-" else "+", fontSize = 48.sp, color = if (isNegative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary, modifier = Modifier.width(50.dp))
+                Text(text = if (isNegative) {"-"} else {"+"}, fontSize = 48.sp, color = if (isNegative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary, modifier = Modifier.width(50.dp))
                 OutlinedTextField(value = points, onValueChange = {points = it.filter {char -> char.isDigit()}}, placeholder = {Text("Points", textAlign = TextAlign.Center)}, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), textStyle = LocalTextStyle.current.copy(fontSize = 48.sp, textAlign = TextAlign.Center), modifier = Modifier.weight(1f), singleLine = true)
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -75,7 +75,7 @@ fun ScoreEntrySheet(player: Player, currentRound: Int, repository: GameRepositor
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(1, 5, 10, 25, 50).forEach {value ->
-                    Button(onClick = {submitPoints(value)}, colors = ButtonDefaults.buttonColors(containerColor = if (isNegative) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.primaryContainer, contentColor = if (isNegative) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onPrimaryContainer)) {
+                    Button(onClick = {submitPoints(value)}, colors = ButtonDefaults.buttonColors(containerColor = if (isNegative) {MaterialTheme.colorScheme.errorContainer} else {MaterialTheme.colorScheme.primaryContainer}, contentColor = if (isNegative) {MaterialTheme.colorScheme.onErrorContainer} else {MaterialTheme.colorScheme.onPrimaryContainer})) {
                         Text("${if (isNegative) "-" else "+"}$value")
                     }
                 }

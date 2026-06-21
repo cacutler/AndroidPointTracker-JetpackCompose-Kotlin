@@ -44,7 +44,7 @@ fun TrickTrackingSheet(player: Player, currentRound: Int, repository: GameReposi
             Text("Tricks to win this round", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                FilledTonalIconButton(onClick = {if (bidInput > 0) {bidInput-- }}) {
+                FilledTonalIconButton(onClick = {if (bidInput > 0) {bidInput--}}) {
                     Text("−", fontSize = 20.sp)
                 }
                 Text("$bidInput", style = MaterialTheme.typography.displaySmall, modifier = Modifier.padding(horizontal = 32.dp))
@@ -62,7 +62,7 @@ fun TrickTrackingSheet(player: Player, currentRound: Int, repository: GameReposi
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (trickEntry == null) "Set Goal" else "Update Goal")
+                Text(if (trickEntry == null) {"Set Goal"} else {"Update Goal"})
             }
             OutlinedButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
                 Text("Cancel")
