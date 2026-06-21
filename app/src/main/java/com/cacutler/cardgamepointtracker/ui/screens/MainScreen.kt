@@ -62,7 +62,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
                 item {
                     Text("Completed Games", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(16.dp))
                 }
-                items(completedGames, key = {it.game.id}) { gameWithPlayers ->
+                items(completedGames, key = {it.game.id}) {gameWithPlayers ->
                     GameRow(gameWithPlayers = gameWithPlayers, onClick = {onNavigateToGame(gameWithPlayers.game.id)}, onDelete = {viewModel.deleteGame(gameWithPlayers.game)})
                 }
             }
@@ -136,7 +136,7 @@ fun GameRow(gameWithPlayers: GameWithPlayers, onClick: () -> Unit, onDelete: () 
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(onClick = {showDeleteDialog = false}) {
                     Text("Cancel")
                 }
             }

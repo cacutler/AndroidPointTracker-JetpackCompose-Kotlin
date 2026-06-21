@@ -63,8 +63,8 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     val game = gameWithPlayers?.game
     val sortedPlayers = players.sortedByDescending {it.score}
     var winner by remember {mutableStateOf<Player?>(null)}
-    var showTrickSheet by remember { mutableStateOf(false) }
-    var trickPlayer by remember { mutableStateOf<Player?>(null) }
+    var showTrickSheet by remember {mutableStateOf(false)}
+    var trickPlayer by remember {mutableStateOf<Player?>(null)}
     LaunchedEffect(game?.isActive, players) {
         if (game?.isActive == false && players.isNotEmpty()) {
             winner = viewModel.getWinner()
@@ -124,11 +124,7 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
                             if (game?.isActive == true) {
                                 Text("Tap players to add scores", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
-                            Text(
-                                if (game?.lowestScoreWins == true) "Lowest score wins" else "Highest score wins",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            Text(if (game?.lowestScoreWins == true) {"Lowest score wins"} else {"Highest score wins"}, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         if (game?.isActive == true) {
                             Button(onClick = {showNextRoundDialog = true}) {
@@ -182,26 +178,36 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
         )
     }
     if (showTrickSheet && trickPlayer != null) {
-        TrickTrackingSheet(player = trickPlayer!!, currentRound = game?.currentRound ?: 1, repository = repository, onDismiss = {
-            showTrickSheet = false
-            trickPlayer = null
-        })
+        TrickTrackingSheet(
+            player = trickPlayer!!,
+            currentRound = game?.currentRound ?: 1,
+            repository = repository, onDismiss = {
+                showTrickSheet = false
+                trickPlayer = null
+            }
+        )
     }
     if (showNextRoundDialog) {
         AlertDialog(
             onDismissRequest = {showNextRoundDialog = false},
-            title = {Text("Start Next Round?")},
-            text = {Text("Round ${game?.currentRound} will be complete and Round ${(game?.currentRound ?: 1) + 1} will begin.")},
+            title = {
+                Text("Start Next Round?")
+            },
+            text = {
+                Text("Round ${game?.currentRound} will be complete and Round ${(game?.currentRound ?: 1) + 1} will begin.")
+            },
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.nextRound()
-                    showNextRoundDialog = false
-                }) {
+                TextButton(
+                    onClick = {
+                        viewModel.nextRound()
+                        showNextRoundDialog = false
+                    }
+                ) {
                     Text("Next Round")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showNextRoundDialog = false }) {
+                TextButton(onClick = {showNextRoundDialog = false}) {
                     Text("Cancel")
                 }
             }
@@ -209,9 +215,15 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     }
     if (showResetDialog) {
         AlertDialog(
-            onDismissRequest = {showResetDialog = false},
-            title = {Text("Reset Game?")},
-            text = {Text("This will delete all scores and reset the game to Round 1. This action cannot be undone.")},
+            onDismissRequest = {
+                showResetDialog = false
+            },
+            title = {
+                Text("Reset Game?")
+            },
+            text = {
+                Text("This will delete all scores and reset the game to Round 1. This action cannot be undone.")
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -232,7 +244,9 @@ fun GameScreen(viewModel: GameViewModel, repository: GameRepository, onNavigateB
     }
     if (showAddPlayerDialog) {
         AddPlayerDialog(
-            onDismiss = {showAddPlayerDialog = false},
+            onDismiss = {
+                showAddPlayerDialog = false
+            },
             onAddPlayer = {name ->
                 viewModel.addPlayer(name)
                 showAddPlayerDialog = false
@@ -284,8 +298,12 @@ fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Bo
     if (showRemoveDialog) {
         AlertDialog(
             onDismissRequest = {showRemoveDialog = false},
-            title = {Text("Remove Player?")},
-            text = {Text("Remove ${player.name} from this game? Their scores will be deleted.")},
+            title = {
+                Text("Remove Player?")
+            },
+            text = {
+                Text("Remove ${player.name} from this game? Their scores will be deleted.")
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -298,7 +316,7 @@ fun PlayerRow(player: Player, isActive: Boolean, currentRound: Int, isWinner: Bo
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showRemoveDialog = false }) {
+                TextButton(onClick = {showRemoveDialog = false}) {
                     Text("Cancel")
                 }
             }
@@ -340,6 +358,10 @@ fun RoundDetailDialog(player: Player, round: Int, repository: GameRepository, on
                 }
             }
         },
-        confirmButton = {TextButton(onClick = onDismiss) {Text("Close")}}
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
     )
 }
