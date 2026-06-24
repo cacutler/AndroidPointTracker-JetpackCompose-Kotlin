@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.cacutler.cardgamepointtracker.ui.viewmodels.MainViewModel
 import com.cacutler.cardgamepointtracker.data.GameWithPlayers
 import java.text.SimpleDateFormat
-import java.util.*
 import androidx.compose.ui.platform.LocalLocale
+import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
