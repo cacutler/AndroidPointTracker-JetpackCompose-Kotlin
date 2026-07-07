@@ -49,7 +49,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
                 item {
                     Text("Active Games", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(16.dp))
                 }
-                items(activeGames, key = {it.game.id}) { gameWithPlayers ->
+                items(activeGames, key = {it.game.id}) {gameWithPlayers ->
                     GameRow(gameWithPlayers = gameWithPlayers, onClick = {onNavigateToGame(gameWithPlayers.game.id)}, onDelete = {viewModel.deleteGame(gameWithPlayers.game)})
                 }
             }
@@ -57,7 +57,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToGame: (String) -> Unit) {
                 item {
                     Text("Completed Games", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(16.dp))
                 }
-                items(completedGames, key = {it.game.id}) { gameWithPlayers ->
+                items(completedGames, key = {it.game.id}) {gameWithPlayers ->
                     GameRow(gameWithPlayers = gameWithPlayers, onClick = {onNavigateToGame(gameWithPlayers.game.id)}, onDelete = {viewModel.deleteGame(gameWithPlayers.game)})
                 }
             }
