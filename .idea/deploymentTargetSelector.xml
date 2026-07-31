@@ -40,6 +40,10 @@
           </targets>
         </DialogSelection>
       </SelectionState>
+      <SelectionState runConfigName="GameDaoTest">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DialogSelection />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
